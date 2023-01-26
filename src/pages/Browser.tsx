@@ -7,8 +7,8 @@ import { motion } from 'framer-motion'
 export default () => {
     // const list = useQuery('asos-product-list', () => asos.product.list({ offset: 0, categoryId: 4209, limit: 30, sort: 'freshness' }))
 
-    return <Page className="grid gap-8 grid-cols-4">
-        <div className="bg-black text-white p-2 rounded-lg min-h-[calc(100vh-7rem)] h-fit flex flex-col gap-4">
+    return <Page className="grid gap-8 grid-cols-4 relative">
+        <div className="bg-black text-white sticky top-0 p-2 rounded-lg min-h-[calc(100vh-8rem)] h-fit flex flex-col gap-4">
             <form>
                 <input type='text' className='bg-transparent w-full outline-none active:outline-none focus:ring-0 border-x-0 border-t-0 focus:border-b-white border-b-2 border-b-white h-6 p-0' placeholder='Search?' />
             </form>

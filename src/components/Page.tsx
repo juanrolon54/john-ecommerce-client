@@ -44,7 +44,7 @@ export default (props: HTMLMotionProps<"div">) => {
         initial={{ x: window.innerWidth * dir - 64 }}
         animate={{ x: 0 }}
         exit={{ x: -window.innerWidth * dir }}
-        transition={{ ease: 'easeInOut', duration: 0.3 }}
+        transition={{ ease: 'anticipate', duration: 0.3 }}
     >
         {props.children}
     </motion.div>

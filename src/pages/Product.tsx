@@ -31,35 +31,23 @@ export default () => {
                 </div>
             </motion.div>
         </div>
-        <div className='flex flex-col gap-4'>
+        {/* <div className='flex flex-col gap-4'>
             <div>More like this</div>
             <div className="grid grid-cols-4 grid-flow-row gap-2 text-white">
-                {products.map(product => <Link key={product.id} to={`/product/${product.id}`} className="bg-black rounded-xl relative flex flex-col group hover:z-40">
-                    <img src={product.pictureUrl} loading="lazy" className="aspect-square object-cover rounded-lg bg-slate-400" />
-                    <div className="absolute bottom-4 right-4 z-30 group-hover:translate-y-[330%] transition-transform bg-black px-2 rounded-full">
-                        $ {product.price}
-                    </div>
-                    <div className="absolute border-b border-b-white left-0 bottom-0 w-full rounded-lg bg-black pt-8 p-4 -z-10 group-hover:translate-y-[calc(100%-1rem)] group-hover: transition-transform translate-x-0">
-                        <p>{product.name}</p>
-                        <p>{product.colors.join(' • ')}</p>
-                    </div>
+                {Array.from(Array(4)).map((product: number, index) => <Link key={index} to={`/product/${index}`} className="h-full w-full">
+                    <motion.div layoutId={'asos-product-detail-' + index + '-description'} className="rounded-xl bg-black flex flex-col overflow-hidden">
+                        <div className='relative'>
+                            <motion.img layoutId={'asos-product-detail-' + index + '-img'} src={index} crossOrigin='anonymous' referrerPolicy='no-referrer' loading="lazy" className="aspect-square object-cover rounded-lg bg-slate-400 w-full h-full border" />
+                            <div className="absolute bottom-4 right-4 bg-black px-2 rounded-full">
+                                $ {index}
+                            </div>
+                        </div>
+                        <div className='w-full rounded-lg bg-black pt-8 p-4'>
+                            <p>{index}</p>
+                        </div>
+                    </motion.div>
                 </Link>)}
             </div>
-        </div>
+        </div> */}
     </Page>
 }
-
-type product = {
-    id: string
-    name: string
-    price: number
-    colors: string[]
-    pictureUrl: string
-}
-
-const products: product[] = new Array(4).fill({
-    name: 'Product',
-    price: 1000.0,
-    colors: ['red', 'blue', 'black'],
-    pictureUrl: 'https://placeimg.com/640/480/arch'
-},).map(p => ({ ...p, id: String(Math.random()) }))
