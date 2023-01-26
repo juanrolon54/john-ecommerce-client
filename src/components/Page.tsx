@@ -35,17 +35,13 @@ export default (props: HTMLMotionProps<"div">) => {
 
     useLayoutEffect(() => {
         if (ref.current) ref.current.scrollTop = scroll
-        // restoreScroll()
     }, [])
     return <motion.div
         {...props}
-        onScroll={() => {
-            // console.table({ scrollHeight: (ref.current?.scrollHeight - ref.current?.clientHeight), scrollTop: ref.current?.scrollTop, savedScroll: scroll })
-            setScroll(ref.current?.scrollTop || 0)
-        }}
+        onScroll={() => { setScroll(ref.current?.scrollTop || 0) }}
         className={props.className + ' absolute top-0 left-0 right-0 h-page p-page overflow-x-hidden overflow-y-scroll'}
         ref={ref}
-        initial={{ x: window.innerWidth * dir }}
+        initial={{ x: window.innerWidth * dir - 64 }}
         animate={{ x: 0 }}
         exit={{ x: -window.innerWidth * dir }}
         transition={{ ease: 'easeInOut', duration: 0.3 }}
