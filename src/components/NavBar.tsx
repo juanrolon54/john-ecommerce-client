@@ -1,9 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
 import type { HTMLAttributes } from 'react'
+import useToggle from 'usehooks-ts/dist/esm/useToggle/useToggle'
+import { motion } from 'framer-motion'
 
 export default () => {
     const loc = useLocation()
-
+    const [visible, toggle] = useToggle(false)
     return <div className='bg-black text-white absolute top-0 left-0 right-0 flex items-center h-12 gap-4 z-50 px-16'>
         <Link to='/' state={{ dir: 'left' }}>BRAND</Link>
         <div className='group relative hover:z-10'>
@@ -16,7 +18,8 @@ export default () => {
         </div>
         <Link to='/browser'><Search className='flex-1' /></Link>
         <div className='flex-1' />
-        <div>Cart</div>
+        <button onClick={toggle}>Cart</button>
+        {visible && <motion.div layoutId={'product-detail-' + 1 + '-img'} initial={{ x: window.innerWidth }} animate={{ x: 0 }} className='bg-black fixed top-16 right-8 aspect-square p-16 rounded-xl'></motion.div>}
         <div>Login</div>
         <div className="bg-white px-2 rounded-full text-black">SignUp</div>
     </div>

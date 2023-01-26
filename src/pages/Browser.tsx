@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
 import { Page } from "../components"
 import { Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import useFirebaseProducts from '../hooks/useFirebaseProductCollection'
 import { motion } from 'framer-motion'
 
 export default () => {
     // const list = useQuery('asos-product-list', () => asos.product.list({ offset: 0, categoryId: 4209, limit: 30, sort: 'freshness' }))
+    const [products, isLoading] = useFirebaseProducts()
 
     return <Page className="grid gap-8 grid-cols-4 relative">
         <div className="bg-black text-white sticky top-0 p-2 rounded-lg min-h-[calc(100vh-8rem)] h-fit flex flex-col gap-4">
@@ -23,21 +24,21 @@ export default () => {
                     .map(color => <div key={color} className="px-4 pl-8 bg-black rounded-full w-fit">{color}</div>)}
             </div>
         </div>
-        <div className="col-span-3 flex flex-col gap-8 text-white">
+        <div className="col-span-3 flex flex-col gap-8 text-white pb-32">
             <div className="flex flex-wrap gap-2">
                 {parameters.map(parameter => <div key={Math.random()} className="px-4 pl-8 bg-black rounded-full">{parameter}</div>)}
             </div>
             <div className="grid grid-cols-3 grid-flow-row gap-4 h-max">
-                {Array.from(Array(30)).map((product: number, index) => <Link key={index} to={`/product/${index}`} className="h-full w-full">
-                    <motion.div layoutId={'asos-product-detail-' + index + '-description'} className="rounded-xl bg-black flex flex-col overflow-hidden">
+                {!isLoading && products?.map(({ id, name, picture, price }) => <Link key={id} to={`/product/${id}`} className="h-full w-full">
+                    <motion.div layoutId={'product-detail-' + id + '-description'} className="rounded-xl bg-black flex flex-col overflow-hidden">
                         <div className='relative'>
-                            <motion.img layoutId={'asos-product-detail-' + index + '-img'} /* src={String(index)}*/ crossOrigin='anonymous' referrerPolicy='no-referrer' loading="lazy" className="aspect-square object-cover rounded-lg bg-slate-400 w-full h-full border" />
+                            <motion.img layoutId={'product-detail-' + id + '-img'} src={picture} alt={name} crossOrigin='anonymous' referrerPolicy='no-referrer' loading="lazy" className="aspect-square object-cover rounded-lg bg-slate-400 w-full h-full border" />
                             <div className="absolute bottom-4 right-4 bg-black px-2 rounded-full">
-                                $ {index}
+                                $ {price}
                             </div>
                         </div>
                         <div className='w-full rounded-lg bg-black pt-8 p-4'>
-                            <p>{index}</p>
+                            <p>{name}</p>
                         </div>
                     </motion.div>
                 </Link>)}

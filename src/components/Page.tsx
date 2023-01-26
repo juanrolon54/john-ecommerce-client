@@ -11,9 +11,10 @@ export default (props: HTMLMotionProps<"div">) => {
     const ref = useRef<HTMLDivElement>(null)
 
     const directions = {
-        'left': -1,
-        'right': 1
+        left: -1,
+        right: 1
     }
+
     // @ts-ignore
     const dir = directions[loc.state?.dir] ?? 1
     const restoreScroll = () => {
@@ -44,7 +45,7 @@ export default (props: HTMLMotionProps<"div">) => {
         initial={{ x: window.innerWidth * dir - 64 }}
         animate={{ x: 0 }}
         exit={{ x: -window.innerWidth * dir }}
-        transition={{ ease: 'anticipate', duration: 0.3 }}
+        transition={{ type: 'spring', damping: 100, stiffness: 1000 }}
     >
         {props.children}
     </motion.div>
