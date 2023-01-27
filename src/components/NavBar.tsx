@@ -1,7 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import useToggle from 'usehooks-ts/dist/esm/useToggle/useToggle'
 import { motion } from 'framer-motion'
-import SearchBar from './SearchBar'
 
 export default () => {
     const loc = useLocation()
@@ -18,7 +17,6 @@ export default () => {
                 </Link>)}
             </div> */}
         </div>
-        {loc.pathname !== '/browser' && <Link to='/browser' state={{ dir: fromBrowser }}><SearchBar /></Link>}
         <div className='flex-1' />
         <button onClick={toggle}>Cart</button>
         {visible && <motion.div layoutId={'product-detail-' + 1 + '-img'} initial={{ x: window.innerWidth }} animate={{ x: 0 }} className='border border-black bg-black fixed top-16 right-8 aspect-square p-16 rounded-xl'></motion.div>}
