@@ -1,21 +1,22 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
 import { motion } from 'framer-motion'
-
 import { Page } from '../components'
-import useFirebaseProduct from '../hooks/useFirebaseProduct'
+import { useFirestoreDocumentData } from '@react-query-firebase/firestore'
+
+import { doc } from 'firebase/firestore'
+import Products from '../firebase/Products'
 
 export default () => {
     const params = useParams()
     if (!params.id) return null
 
-    const [product, isLoading] = useFirebaseProduct(params.id)
+    const { data: product, isLoading } = useFirestoreDocumentData(["product", params.id], doc(Products, params.id))
 
     return <Page className='flex flex-col gap-8'>
         <Link to='/browser' state={{ dir: 'left' }} className='absolute top-6'>Go back</Link>
         <div className="flex gap-4">
-            <motion.img referrerPolicy='no-referrer' crossOrigin='anonymous' src={product?.picture} alt={product?.name} layoutId={'product-detail-' + params.id + '-img'} className='bg-slate-400 rounded-lg aspect-square h-[60vh]'></motion.img>
+            <motion.img referrerPolicy='no-referrer' crossOrigin='anonymous' src={product?.picture} alt={product?.name} layoutId={'product-detail-' + params.id + '-img'} className='border border-black bg-slate-400 rounded-lg aspect-square h-[60vh]'></motion.img>
             <motion.div layoutId={'product-detail-' + params.id + '-description'} className='bg-black rounded-lg p-4 flex-1 text-white flex flex-col gap-4'>
                 <div className='flex justify-between'>
                     <div>{product?.name}</div>
