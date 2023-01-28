@@ -22,38 +22,51 @@ export default () => {
 
     return (
         <Page
-            className='relative grid grid-cols-4 gap-8'
+            className='relative grid grid-cols-4 gap-8 select-none'
             scrollRestoring={!isLoading}>
-            <div className='sticky top-2 flex h-fit flex-col gap-2'>
+            <div className='sticky top-2 flex h-fit flex-col gap-4'>
                 <SearchBar className='border border-black ' />
-                <div className='flex h-fit flex-col gap-2 border border-black bg-black text-white'>
-                    <p className='px-4 pt-1'>type</p>
+                <div className='grid grid-cols-4 gap-2'>
+                    {['A', 'B', 'C', 'D'].map(item => <div className='rounded-2xl bg-white border border-black aspect-square'></div>)}
+                </div>
+                <motion.div layout className='flex h-fit flex-col gap-2 border border-black bg-black text-white'>
                     <div className='flex translate-x-2 -translate-y-2 flex-wrap gap-2 justify-end'>
                         {assets.categories.sort((a, b) => a.length - b.length).filter((cat) => !selectedCategories.includes(cat)).map((category) => (
-                            <motion.div onClick={flipFlop(category)} layoutId={'browser-filters-' + category} key={category} className='w-fit rounded-full border border-black bg-white text-black px-2'>
+                            <motion.button onClick={flipFlop(category)} layoutId={'browser-filters-' + category} key={category} className='z-40 w-fit rounded-full border border-black bg-white text-black px-2'>
                                 {category}
-                            </motion.div>
+                            </motion.button>
                         ))}
                     </div>
-                    <p className='px-4'>color</p>
                     <motion.div layout initial={{ x: 8, y: -8 }} className='flex flex-wrap justify-evenly gap-2 rounded-2xl border border-black bg-white p-2'>
-                        {assets.colors.map((color) => (
+                        {assets.colors.filter((color) => !selectedCategories.includes(color)).map((color) => (
                             <motion.div
-                                layout
+                                onClick={flipFlop(color)}
+                                layoutId={'browser-filters-' + color}
                                 key={color}
                                 style={{ backgroundColor: color }}
-                                className='h-6 w-6 overflow-hidden rounded-full border border-black px-2 text-black transition-all'
+                                className='h-6 w-6 overflow-hidden rounded-full border border-black px-2 text-black'
                             />
                         ))}
                     </motion.div>
-                </div>
+                </motion.div>
             </div>
-            <div className='col-span-3 flex flex-col gap-8 pb-32 text-white'>
-                <div className="flex flex-wrap gap-2 h-fit">
+            <div className='col-span-3 flex flex-col pb-32 text-white'>
+                <div className="flex flex-wrap gap-2 h-fit mb-8 empty:mb-0">
+                    {selectedCategories.length > 0 && <button onClick={() => setSelectedCategories([])} className='text-black font-semibold'>clear</button>}
                     {selectedCategories.map(category =>
-                        <motion.div onClick={flipFlop(category)} layoutId={'browser-filters-' + category} key={category} className='w-fit rounded-full border border-black bg-white text-black px-2'>
-                            {category}
-                        </motion.div>
+                        assets.colors.includes(category) ?
+                            <motion.div
+                                onClick={flipFlop(category)}
+                                layoutId={'browser-filters-' + category}
+                                key={category}
+                                style={{ backgroundColor: category }}
+                                className='h-6 w-6 overflow-hidden rounded-full border border-black px-2 text-black'
+                            />
+                            :
+                            <motion.button onClick={flipFlop(category)} layoutId={'browser-filters-' + category} key={category}
+                                className='z-40 w-fit rounded-full border border-black bg-white text-black px-2'>
+                                {category}
+                            </motion.button>
                     )}
                 </div>
                 <motion.div layout className='grid h-max grid-flow-row grid-cols-3 gap-6'>

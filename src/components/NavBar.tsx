@@ -12,7 +12,7 @@ export default () => {
             : 'right'
 
     return (
-        <div className='absolute top-0 left-0 right-0 z-50 flex h-12 items-center gap-4 bg-black px-16 text-white'>
+        <div className='absolute top-0 left-0 right-0 z-50 flex h-12 items-center gap-4 bg-black px-4  text-white'>
             <Link to='/' state={{ dir: 'left' }}>
                 <Brand className='rounded-full bg-white px-4 text-black' />
             </Link>
