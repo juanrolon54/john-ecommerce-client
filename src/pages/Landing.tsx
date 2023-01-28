@@ -8,7 +8,7 @@ import type { HTMLAttributes, DetailedHTMLProps } from 'react'
 export default () => {
     return <Page className="grid gap-8">
         <div className="grid grid-cols-2 grid-rows-3 gap-2 h-[75vh]">
-            <Link to='/browser' state={{ dir: "right" }} className="p-4 border border-black col-span-2 row-span-2 rounded-lg bg-slate-400">Featured!</Link>
+            <Link to='/browser' state={{ dir: "right" }} className="p-4 border border-black col-span-2 row-span-2 rounded-lg bg-slate-200">Featured!</Link>
             <div className="p-4 bg-black rounded-lg">Cta1</div>
             <div className="p-4 bg-black rounded-lg">Cta2</div>
         </div>

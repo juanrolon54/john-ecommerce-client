@@ -1,0 +1,2 @@
+import { HTMLAttributes } from 'react'
+export default (props: HTMLAttributes<HTMLDivElement>) => <div {...props}><span className='font-black'>AI</span><span className='tracking-tighter font-light'>marketplace</span></div> 
