@@ -53,7 +53,7 @@ export default (props: PageProps) => {
         initial={{ x: window.innerWidth * dir - 64 }}
         animate={{ x: 0 }}
         exit={{ x: -window.innerWidth * dir }}
-        transition={{ type: 'spring', damping: 100, stiffness: 800 }}
+        transition={{ type: 'spring', damping: 100, stiffness: 1000 }}
     >
         <div className={props.className + ' min-h-page p-page'}>
             <>{props.children}</>

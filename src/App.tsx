@@ -15,7 +15,7 @@ function App() {
   if (!routes) return null
 
   return (
-    <div className="relative h-screen font-light">
+    <div className="relative h-screen w-screen font-light overflow-hidden">
       <NavBar />
       <div className="absolute inset-0 top-12 flex overflow-hidden" >
         <AnimatePresence initial={false}>
