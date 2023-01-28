@@ -10,22 +10,24 @@ export default () => {
     const { data: products, isLoading } = useFirestoreQueryData(["products"], Products)
 
     return <Page className="grid gap-8 grid-cols-4 relative" scrollRestoring={!isLoading}>
-        <div className="bg-black text-white sticky top-0 border border-black rounded-[18px]  min-h-[calc(100vh-8rem)] h-fit flex flex-col gap-4">
-            <SearchBar />
-            <p className="-mb-2 pl-2">type</p>
-            <div className="bg-white rounded-2xl flex flex-wrap gap-2 p-2">
-                {assets.categories
-                    .map(type => <div key={type} className="px-4 pl-8 bg-black rounded-full w-fit">{type}</div>)}
-            </div>
-            <p className="-mb-2 pl-2">color</p>
-            <div className="bg-white rounded-2xl grid grid-cols-8 grid-rows-3 gap-2 p-2">
-                {assets.colors.map(color =>
-                    <div
-                        key={color}
-                        style={{ backgroundColor: color }}
-                        className="rounded-full overflow-hidden text-black border-black border w-6 px-2 h-6 transition-all"
-                    />)
-                }
+        <div className='flex flex-col gap-2'>
+            <SearchBar className='border border-black ' />
+            <div className="bg-black text-white sticky top-0 border border-black rounded-[18px]  h-fit flex flex-col gap-2 ">
+                <p className="px-4 pt-1">type</p>
+                <div className="bg-white rounded-2xl flex flex-wrap gap-2 p-2">
+                    {assets.categories
+                        .map(type => <div key={type} className="px-4 pl-8 bg-black rounded-full w-fit">{type}</div>)}
+                </div>
+                <p className="px-4">color</p>
+                <div className="bg-white rounded-2xl flex flex-wrap justify-evenly gap-2 p-2">
+                    {assets.colors.map(color =>
+                        <div
+                            key={color}
+                            style={{ backgroundColor: color }}
+                            className="rounded-full overflow-hidden text-black border-black border w-6 px-2 h-6 transition-all"
+                        />)
+                    }
+                </div>
             </div>
         </div>
         <div className="col-span-3 flex flex-col gap-8 text-white pb-32">

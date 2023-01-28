@@ -7,6 +7,6 @@ export default function (props: HTMLMotionProps<"input">) {
         type='text'
         placeholder='Search'
         {...props}
-        className={props.className + ' border z-50 border-black w-full text-black rounded-full px-2 outline-none active:outline-none focus:ring-0 border-x-0 border-t-0 bg-white h-8'}
+        className={props.className + ' border z-50 border-black w-full text-black rounded-full px-2 outline-none active:outline-none focus:ring-0 bg-white h-8'}
     />
 }
