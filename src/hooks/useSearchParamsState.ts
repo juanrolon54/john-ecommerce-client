@@ -1,16 +1,15 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-type Return = [
-    string,
-    (key: string) => void
-]
+type Return = [string, (key: string) => void]
 
 export default (key: string): Return => {
     const [currentSearchParams, setSearchParams] = useSearchParams()
 
     const updateSearchParams = (value: string) => {
-        let newSearchParams = new URLSearchParams((window.location.href.match(/\?.*/) || [''])[0])
+        let newSearchParams = new URLSearchParams(
+            (window.location.href.match(/\?.*/) || [''])[0],
+        )
         newSearchParams.set(key, value)
         setSearchParams(newSearchParams)
     }

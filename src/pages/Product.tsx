@@ -13,31 +13,33 @@ export default () => {
 
     const { data: product, isLoading } = useFirestoreDocumentData(["product", params.id], doc(Products, params.id))
 
-    return <Page className='flex flex-col gap-8'>
+    return <Page className='flex flex-col gap-8' scrollRestoring={!isLoading}>
         <Link to='/browser' state={{ dir: 'left' }} className=''>Go back</Link>
         <div className="flex gap-4 relative border h-[60vh]">
-            <motion.img animate={{ x: -12, y: -12 }} referrerPolicy='no-referrer' src={product?.picture} alt={product?.name} layoutId={'product-detail-' + params.id + '-img'}
-                className='absolute border border-black bg-slate-200 rounded-2xl aspect-square h-[60vh] z-40 left-0 bottom-0' />
-            <div className='flex flex-col bottom-0 '>
-                <div className='pl-[calc(60vh+1rem)] flex text-6xl font-semi min-h-[60px] leading-normal'>{product?.name}</div>
-                <motion.div layoutId={'product-detail-' + params.id + '-description'} className='pl-[calc(60vh+1rem)] w-full flex-1 flex bg-black text-white gap-4'>
-                    <div className='flex flex-col gap-4 p-2'>
-                        <div className='flex gap-2 w-full justify-end'>
-                            {product?.categories.map(category => <div className='rounded-full px-2 bg-white text-black'>{category}</div>)}
-                        </div>
+            <div className='absolute -translate-x-4 -translate-y-4 left-0 bottom-0 aspect-square h-[60vh] z-40'>
+                <motion.img referrerPolicy='no-referrer' src={product?.picture} alt={product?.name} layoutId={'product-detail-' + params.id + '-img'}
+                    className='absolute border border-black bg-slate-200 rounded-2xl aspect-square h-[60vh] left-0 bottom-0' />
+            </div>
+            <div className='flex flex-col bottom-0 flex-1'>
+                <div className='pl-[calc(60vh+1rem)] flex text-6xl font-semi h-24 leading-normal'>{product?.name}</div>
+                <motion.div layoutId={'product-detail-' + params.id + '-description'} className='pl-[calc(60vh+1rem)] flex-1 flex bg-black text-white gap-4 rounded-br-3xl mt-2'>
+                    <div className='flex flex-col gap-4 p-2 flex-1'>
+                        <motion.div className='flex gap-2 w-full justify-end -translate-y-6 translate-x-6 text-xl'>
+                            {product?.categories.map(category => <motion.div key={category} className='rounded-full px-2 bg-white text-black border border-black'>{category}</motion.div>)}
+                        </motion.div>
                         <div>{product?.abstract}</div>
                         <div>{product?.article}</div>
                         <div className='flex-1' />
-                        <div className="flex gap-4 items-baseline text-xl">
-                            <div className='font-semibold underline tracking-tighter'>$ {product?.price}</div>
+                        <div className='flex gap-4 items-baseline text-xl'>
+                            <div className='font-semibold tracking-tighter bg-white py-2 px-4 rounded-full text-black -translate-x-16 z-50 border border-black'>$ {product?.price}</div>
                             <div className='flex-1' />
                             <div>Add to cart</div>
-                            <div className='py-2 px-4 bg-white text-black w-fit rounded-full'>BUY NOW</div>
+                            <div className='py-2 px-4 bg-white text-black w-fit rounded-full '>BUY NOW</div>
                         </div>
                     </div>
                 </motion.div>
             </div>
-        </div>
+        </div >
         {/* <div className='flex flex-col gap-4'>
             <div>More like this</div>
             <div className="grid grid-cols-4 grid-flow-row gap-2 text-white">

@@ -1,5 +1,15 @@
-import { DocumentReference, DocumentSnapshot, collection } from 'firebase/firestore'
-import type { FirestoreDataConverter, WithFieldValue, DocumentData, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
+import {
+    DocumentReference,
+    DocumentSnapshot,
+    collection,
+} from 'firebase/firestore'
+import type {
+    FirestoreDataConverter,
+    WithFieldValue,
+    DocumentData,
+    QueryDocumentSnapshot,
+    SnapshotOptions,
+} from 'firebase/firestore'
 import firebase from '.'
 
 type Product = {
@@ -33,13 +43,13 @@ const postConverter: FirestoreDataConverter<Product> = {
             rating: post.rating,
             specification: post.specification,
             state: post.state,
-        };
+        }
     },
     fromFirestore(
         snapshot: QueryDocumentSnapshot,
-        options: SnapshotOptions
+        options: SnapshotOptions,
     ): Product {
-        const data = snapshot.data(options);
+        const data = snapshot.data(options)
         return {
             id: snapshot.id,
             ref: snapshot.ref,
@@ -54,8 +64,10 @@ const postConverter: FirestoreDataConverter<Product> = {
             specification: data.specification,
             state: data.state,
             reviews: data.reviews,
-        };
+        }
     },
-};
+}
 
-export default collection(firebase.store, 'products').withConverter(postConverter);
+export default collection(firebase.store, 'products').withConverter(
+    postConverter,
+)
