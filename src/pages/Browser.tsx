@@ -8,7 +8,7 @@ import { useContext } from '../context'
 import Products from '../firebase/Products'
 import assets from '../assets/assets'
 
-import { ImCoinDollar, ImSortAlphaAsc, ImSortAlphaDesc, ImSortAmountDesc, ImSortAmountAsc } from 'react-icons/im'
+import { ImCoinDollar, ImSortAlphaAsc, ImSortAlphaDesc, ImSortAmountDesc, ImSortAmountAsc, ImSearch, ImCross } from 'react-icons/im'
 import { FieldPath, orderBy, query, where } from 'firebase/firestore'
 
 export default () => {
@@ -18,6 +18,7 @@ export default () => {
     const [selectedCategories, setSelectedCategories] = useState<string[]>(savedFilters?.selectedCategories ?? [])
     function flipFlop(cat: string) {
         return () => {
+            setSearchValue('')
             setSelectedCategories(prev => prev.includes(cat) ? [...prev].filter(p => p !== cat).slice(0, 10) : [cat, ...prev].slice(0, 10))
         }
     }
@@ -54,17 +55,19 @@ export default () => {
             searchValueTrimmed
         }))
     }, [selectedOrder, selectedCategories, searchValueTrimmed])
-    console.log(savedFilters)
 
     return (
         <Page
             className='relative grid grid-cols-4 gap-8 select-none'
             scrollRestoring={!isLoading}>
             <div className='sticky top-2 flex h-fit flex-col gap-4'>
-                <SearchBar className='border border-black ' value={searchValue} onChange={(e) => {
-                    setSearchValue(e.target.value)
-                    setSelectedCategories([])
-                }} />
+                <div className='relative flex items-center'>
+                    <SearchBar className='border border-black ' value={searchValue} onChange={(e) => {
+                        setSearchValue(e.target.value)
+                        setSelectedCategories([])
+                    }} />
+                    <button className='z-50 absolute right-2'>{searchValueTrimmed !== '' ? <ImCross onClick={() => setSearchValue('')} /> : <ImSearch />}</button>
+                </div>
                 <div className='grid grid-cols-4 gap-2 bg-black rounded-2xl'>
                     {Object.entries(icons).map(([action, icon]) =>
                         <button onClick={() => setSelectedOrder(action)} key={action} className='rounded-2xl aspect-square relative text-white'>
@@ -149,7 +152,7 @@ export default () => {
                             </Link>
                         ))
                     }
-                    {products?.length === 0 && <div className='bg-black text-white px-2 w-fit'>No results</div>}
+                    {products?.length === 0 && <span className='bg-black text-white px-2 w-fit'>No results</span>}
                 </motion.div>
             </div>
         </Page >
