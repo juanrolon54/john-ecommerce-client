@@ -12,7 +12,7 @@ import type {
 } from 'firebase/firestore'
 import firebase from '.'
 
-type Product = {
+export type Product = {
     id: string
     ref: DocumentReference
     abstract: string

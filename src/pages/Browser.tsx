@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { Page, SearchBar } from '../components'
+import { Cart, Page, SearchBar } from '../components'
 import { Link } from 'react-router-dom'
 import { useFirestoreQueryData } from '@react-query-firebase/firestore'
 import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion'
@@ -118,38 +118,40 @@ export default () => {
                 </div>
                 <motion.div layout className='grid h-max grid-flow-row grid-cols-3 gap-6'>
                     {!isLoading &&
-                        products?.map(({ id, name, picture, price }) => (
-                            <Link key={id} to={`/product/${id}`} className='h-full w-full'>
-                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                                    <motion.div
-                                        layoutId={'product-detail-' + id + '-description'}
-                                        className='flex flex-col bg-black rounded-2xl'
-                                    >
-                                        <div className='relative'>
-                                            <motion.div
-                                                animate={{ x: 8, y: -8 }}
-                                                whileHover={{ x: 12, y: -12 }}>
+                        products?.map((product) => (
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key={product.id}>
+                                <motion.div
+                                    layoutId={'product-detail-' + product.id + '-description'}
+                                    className='flex flex-col bg-black rounded-2xl'
+                                >
+                                    <div className='relative'>
+                                        <motion.div
+                                            animate={{ x: 8, y: -8 }}
+                                            whileHover={{ x: 12, y: -12 }}>
+                                            <Link key={product.id} to={`/product/${product.id}`} className=''>
                                                 <motion.img
-                                                    layoutId={'product-detail-' + id + '-img'}
-                                                    srcSet={picture + ', ' + 'https://via.placeholder.com/512/512'}
-                                                    alt={name}
+                                                    layoutId={'product-detail-' + product.id + '-img'}
+                                                    srcSet={product.picture + ', ' + 'https://via.placeholder.com/512/512'}
+                                                    alt={product.name}
                                                     referrerPolicy='no-referrer'
                                                     loading='lazy'
                                                     className='aspect-square h-full w-full rounded-2xl border border-black bg-slate-200 object-cover'
                                                 />
-                                            </motion.div>
-                                        </div>
-                                        <div className='flex justify-between p-2 pl-4'>
-                                            <div className=''>
-                                                <p>{name}</p>
+                                            </Link>
+                                            <div className='flex absolute right-0 bottom-0 translate-x-2 translate-y-2 items-center gap-2'>
+                                                <div className='text-black bg-white rounded-full w-fit border border-black flex items-baseline gap-2 p-1 px-2'>
+                                                    $ {product.price}
+                                                </div>
+                                                <Cart.add product={product} className='border border-black bg-white text-black rounded-full bottom-2 right-2 p-2' />
                                             </div>
-                                            <div className='rounded-full bg-white text-black px-2 border border-black translate-x-4 font-semibold'>
-                                                $ {price}
-                                            </div>
-                                        </div>
-                                    </motion.div>
+
+                                        </motion.div>
+                                    </div>
+                                    <div className='flex justify-between items-baseline px-4 pb-2 pt-0'>
+                                        <p>{product.name}</p>
+                                    </div>
                                 </motion.div>
-                            </Link>
+                            </motion.div>
                         ))
                     }
                     {products?.length === 0 && <span className='bg-black text-white px-2 w-fit'>No results</span>}

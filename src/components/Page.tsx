@@ -24,17 +24,17 @@ export default (props: PageProps) => {
     const dir = directions[loc.state?.dir] ?? 1
     const scrollRestoring = props.scrollRestoring ?? true
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (ref.current && scrollRestoring) {
             ref.current.scrollTop = scroll
+        }
+        return () => {
+            setScroll(ref.current?.scrollTop || 0)
         }
     }, [props.scrollRestoring])
     return (
         <motion.div
             {...props}
-            onScroll={() => {
-                setScroll(ref.current?.scrollTop || 0)
-            }}
             className={
                 ' h-page absolute top-0 left-0 right-0 overflow-x-hidden overflow-y-scroll'
             }
