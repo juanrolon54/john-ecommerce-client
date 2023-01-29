@@ -11,6 +11,8 @@ import {
 type value = {
     scrolls: scrolls
     setScrolls: Dispatch<SetStateAction<scrolls>>
+    filters: string
+    setFilters: Dispatch<SetStateAction<string>>
 }
 
 type scrolls = {
@@ -22,8 +24,10 @@ export const context = createContext<value | null>(null)
 export function ContextProvider(props: { children: ReactNode }) {
     const [scrolls, setScrolls] = useState<scrolls>({})
 
+    const [filters, setFilters] = useState<string>('{}')
+
     return (
-        <context.Provider value={{ scrolls, setScrolls }}>
+        <context.Provider value={{ scrolls, setScrolls, filters, setFilters }}>
             {props.children}
         </context.Provider>
     )

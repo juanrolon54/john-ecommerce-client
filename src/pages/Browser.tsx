@@ -3,43 +3,87 @@ import { useState } from 'react'
 import { Page, SearchBar } from '../components'
 import { Link } from 'react-router-dom'
 import { useFirestoreQueryData } from '@react-query-firebase/firestore'
-import { motion } from 'framer-motion'
+import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion'
+import { useContext } from '../context'
 import Products from '../firebase/Products'
 import assets from '../assets/assets'
 
+import { ImCoinDollar, ImSortAlphaAsc, ImSortAlphaDesc, ImSortAmountDesc, ImSortAmountAsc } from 'react-icons/im'
+import { FieldPath, orderBy, query, where } from 'firebase/firestore'
+
 export default () => {
-    const { data: products, isLoading } = useFirestoreQueryData(
-        ['products'],
-        Products,
-    )
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+    const { filters: savedJSONFilters, setFilters: saveFilters } = useContext()
+    const savedFilters = JSON.parse(savedJSONFilters)
+
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(savedFilters?.selectedCategories ?? [])
     function flipFlop(cat: string) {
         return () => {
-            setSelectedCategories(prev => prev.includes(cat) ? [...prev].filter(p => p !== cat) : [...prev, cat])
+            setSelectedCategories(prev => prev.includes(cat) ? [...prev].filter(p => p !== cat).slice(0, 10) : [cat, ...prev].slice(0, 10))
         }
     }
 
+    const [selectedOrder, setSelectedOrder] = useState<string>(savedFilters?.selectedOrder ?? "price_asc")
+    const icons: { [key: string]: JSX.Element } = {
+        price_asc: <><ImSortAmountAsc /></>,
+        price_desc: <><ImSortAmountDesc /></>,
+        name_asc: <><ImSortAlphaAsc /></>,
+        name_desc: <><ImSortAlphaDesc /></>,
+    }
+
+    const [searchValue, setSearchValue] = useState<string>(savedFilters?.searchValueTrimmed ?? '')
+    const searchValueTrimmed = searchValue.trim().split(' ').map(word => word.length > 0 ? word[0].toUpperCase() + word.slice(1) : word).join('')
+
+    let productsQuery =
+        searchValue.trim() !== '' ?
+            query(Products, where('name', '>=', searchValueTrimmed), where('name', '<=', searchValueTrimmed + '\uf8ff'))
+            : selectedCategories.length > 0 ?
+                query(Products,
+                    where('categories', 'array-contains-any', selectedCategories),
+                    orderBy(selectedOrder.split('_')[0], selectedOrder.split('_')[1] as 'asc' | 'desc'),
+                )
+                : query(Products,
+                    orderBy(selectedOrder.split('_')[0], selectedOrder.split('_')[1] as 'asc' | 'desc')
+                )
+
+    const { data: products, isLoading } = useFirestoreQueryData(['products', JSON.stringify([...selectedCategories].sort()), selectedOrder, searchValueTrimmed], productsQuery, {}, { keepPreviousData: true })
+
+    useEffect(() => {
+        saveFilters(JSON.stringify({
+            selectedCategories: [...selectedCategories].sort(),
+            selectedOrder,
+            searchValueTrimmed
+        }))
+    }, [selectedOrder, selectedCategories, searchValueTrimmed])
+    console.log(savedFilters)
 
     return (
         <Page
             className='relative grid grid-cols-4 gap-8 select-none'
             scrollRestoring={!isLoading}>
             <div className='sticky top-2 flex h-fit flex-col gap-4'>
-                <SearchBar className='border border-black ' />
-                <div className='grid grid-cols-4 gap-2'>
-                    {['A', 'B', 'C', 'D'].map(item => <div className='rounded-2xl bg-white border border-black aspect-square'></div>)}
+                <SearchBar className='border border-black ' value={searchValue} onChange={(e) => {
+                    setSearchValue(e.target.value)
+                    setSelectedCategories([])
+                }} />
+                <div className='grid grid-cols-4 gap-2 bg-black rounded-2xl'>
+                    {Object.entries(icons).map(([action, icon]) =>
+                        <button onClick={() => setSelectedOrder(action)} key={action} className='rounded-2xl aspect-square relative text-white'>
+                            <span className={` flex justify-center ${selectedOrder === action ? '-translate-y-2 translate-x-2 absolute inset-0 flex items-center transition-all' : ''}`}>{icon}</span>
+                            {selectedOrder === action && <motion.div animate={{ x: 8, y: -8 }} layoutId='browser-order' className='mix-blend-difference absolute inset-0 bg-white rounded-2xl z-50 border border-black' />}
+                        </button>
+                    )}
                 </div>
-                <motion.div layout className='flex h-fit flex-col gap-2 border border-black bg-black text-white'>
-                    <div className='flex translate-x-2 -translate-y-2 flex-wrap gap-2 justify-end'>
-                        {assets.categories.sort((a, b) => a.length - b.length).filter((cat) => !selectedCategories.includes(cat)).map((category) => (
+                <motion.div layout className='flex h-fit flex-col gap-2 border border-black bg-black text-white rounded-2xl'>
+                    <div className='flex empty:hidden translate-x-2 -translate-y-2 flex-wrap gap-2 justify-end'>
+                        {[...assets.categories].sort((a, b) => a.length - b.length).filter((cat) => !selectedCategories.includes(cat)).map((category) => (
                             <motion.button onClick={flipFlop(category)} layoutId={'browser-filters-' + category} key={category} className='z-40 w-fit rounded-full border border-black bg-white text-black px-2'>
                                 {category}
                             </motion.button>
                         ))}
                     </div>
-                    <motion.div layout initial={{ x: 8, y: -8 }} className='flex flex-wrap justify-evenly gap-2 rounded-2xl border border-black bg-white p-2'>
+                    <motion.div layout initial={{ x: 8, y: -8 }} className='flex empty:hidden flex-wrap justify-evenly gap-2 rounded-2xl border border-black bg-white p-2'>
                         {assets.colors.filter((color) => !selectedCategories.includes(color)).map((color) => (
-                            <motion.div
+                            <motion.button
                                 onClick={flipFlop(color)}
                                 layoutId={'browser-filters-' + color}
                                 key={color}
@@ -73,35 +117,42 @@ export default () => {
                     {!isLoading &&
                         products?.map(({ id, name, picture, price }) => (
                             <Link key={id} to={`/product/${id}`} className='h-full w-full'>
-                                <motion.div
-                                    layoutId={'product-detail-' + id + '-description'}
-                                    className='flex flex-col bg-black'>
-                                    <div className='relative'>
-                                        <motion.div
-                                            animate={{ x: 8, y: -8 }}
-                                            whileHover={{ x: 12, y: -12 }}>
-                                            <motion.img
-                                                layoutId={'product-detail-' + id + '-img'}
-                                                src={picture}
-                                                alt={name}
-                                                referrerPolicy='no-referrer'
-                                                loading='lazy'
-                                                className='aspect-square h-full w-full rounded-2xl border border-black bg-slate-200 object-cover'
-                                            />
-                                            <div className='absolute bottom-4 right-4 rounded-full bg-black px-2'>
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                                    <motion.div
+                                        layoutId={'product-detail-' + id + '-description'}
+                                        className='flex flex-col bg-black rounded-2xl'
+                                    >
+                                        <div className='relative'>
+                                            <motion.div
+                                                animate={{ x: 8, y: -8 }}
+                                                whileHover={{ x: 12, y: -12 }}>
+                                                <motion.img
+                                                    layoutId={'product-detail-' + id + '-img'}
+                                                    srcSet={picture + ', ' + 'https://via.placeholder.com/512/512'}
+                                                    alt={name}
+                                                    referrerPolicy='no-referrer'
+                                                    loading='lazy'
+                                                    className='aspect-square h-full w-full rounded-2xl border border-black bg-slate-200 object-cover'
+                                                />
+                                            </motion.div>
+                                        </div>
+                                        <div className='flex justify-between p-2 pl-4'>
+                                            <div className=''>
+                                                <p>{name}</p>
+                                            </div>
+                                            <div className='rounded-full bg-white text-black px-2 border border-black translate-x-4 font-semibold'>
                                                 $ {price}
                                             </div>
-                                        </motion.div>
-                                    </div>
-                                    <div className='p-4'>
-                                        <p>{name}</p>
-                                    </div>
+                                        </div>
+                                    </motion.div>
                                 </motion.div>
                             </Link>
-                        ))}
+                        ))
+                    }
+                    {products?.length === 0 && <div className='bg-black text-white px-2 w-fit'>No results</div>}
                 </motion.div>
             </div>
-        </Page>
+        </Page >
     )
 }
 

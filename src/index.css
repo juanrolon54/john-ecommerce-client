@@ -23,6 +23,6 @@
     @apply h-[calc(100vh-3rem)];
   }
   .p-page {
-    @apply px-16 pt-16 pb-32;
+    @apply px-16 pt-16 pb-32 2xl:px-72;
   }
 }

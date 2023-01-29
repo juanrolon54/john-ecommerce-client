@@ -18,7 +18,7 @@ function App() {
     <div className='relative h-screen w-screen overflow-hidden bg-slate-100 font-light'>
       <NavBar />
       <div className='absolute inset-0 top-12 flex overflow-hidden'>
-        <AnimatePresence initial={false} presenceAffectsLayout={true}>
+        <AnimatePresence initial={false}>
           {cloneElement(routes, { key: location.pathname })}
         </AnimatePresence>
       </div>
