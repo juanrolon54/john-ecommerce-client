@@ -4,6 +4,7 @@ import { useLocalStorage, useReadLocalStorage, useToggle } from 'usehooks-ts'
 import { ImCart } from 'react-icons/im'
 import type { Product } from '../firebase/Products'
 import type { MouseEvent } from 'react'
+import useCart from '../hooks/useCart'
 // TODO
 
 interface MutationProps extends HTMLMotionProps<"button"> {
@@ -15,30 +16,31 @@ type CartItem = { amount: number, product: Product }
 
 export default {
     switch(props: HTMLAttributes<HTMLDivElement>) {
-        const items = useReadLocalStorage<Product[]>('cart')
-        const lastItem = items?.[items?.length - 1]
-        return <div {...props}>
-            <ImCart />
+        const [cart] = useCart()
+        return <div {...props} className={'flex items-center gap-2 ' + props.className}>
+            <span className=''>{cart.length}</span>
+            <ImCart className='' />
         </div>
     },
     widget() {
-        const [items, setItems] = useLocalStorage<Product[]>('cart', [])
-        const indexedItems: CartItem[] = items.reduce((prev: CartItem[], curr) => {
-            if (prev.some(cart => cart.product.id === curr.id)) {
-                return prev.map(item => item.product.id !== curr.id ? item : { ...item, amount: item.amount + 1 })
-            } else {
-                return [...prev, { product: curr, amount: 1 }]
-            }
-        }, [])
+        const [cart, addCart, deleteCart] = useCart()
 
-        return <div>{indexedItems.map(item => <div>{item.product.name}:{item.amount}</div>)}</div>
+        // const indexedItems: CartItem[] = items.reduce((prev: CartItem[], curr) => {
+        //     if (prev.some(cart => cart.product.id === curr.id)) {
+        //         return prev.map(item => item.product.id !== curr.id ? item : { ...item, amount: item.amount + 1 })
+        //     } else {
+        //         return [...prev, { product: curr, amount: 1 }]
+        //     }
+        // }, [])
+        console.log(cart)
+        return <div>{cart.map(([product, amount]) => <div>{product.name}:{amount}</div>)}</div>
     },
     add(props: MutationProps) {
-        const [items, setItems] = useLocalStorage<Product[]>('cart', [])
+        const [cart, addCart] = useCart()
 
         function onClickHandler(e: MouseEvent<HTMLButtonElement>) {
             e.stopPropagation()
-            setItems([...items, props.product])
+            addCart(props.product)
         }
 
         return <motion.button whileTap={{ scale: 1.25 }} onClick={onClickHandler} {...props}>

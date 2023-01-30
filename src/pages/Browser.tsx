@@ -10,6 +10,7 @@ import assets from '../assets/assets'
 
 import { ImCoinDollar, ImSortAlphaAsc, ImSortAlphaDesc, ImSortAmountDesc, ImSortAmountAsc, ImSearch, ImCross } from 'react-icons/im'
 import { FieldPath, orderBy, query, where } from 'firebase/firestore'
+import { Spinner } from 'flowbite-react'
 
 export default () => {
     const { filters: savedJSONFilters, setFilters: saveFilters } = useContext()
@@ -116,7 +117,8 @@ export default () => {
                             </motion.button>
                     )}
                 </div>
-                <motion.div layout className='grid h-max grid-flow-row grid-cols-3 gap-6'>
+                <motion.div layout className='grid h-max grid-flow-row grid-cols-3 gap-6 relative'>
+                    {isLoading && <div className='h-[calc(100vh-10rem)] absolute inset-0 grid place-content-center'><Spinner size='xl' /></div>}
                     {!isLoading &&
                         products?.map((product) => (
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key={product.id}>
@@ -128,7 +130,7 @@ export default () => {
                                         <motion.div
                                             animate={{ x: 8, y: -8 }}
                                             whileHover={{ x: 12, y: -12 }}>
-                                            <Link key={product.id} to={`/product/${product.id}`} className=''>
+                                            <Link key={product.id} to={`/product/${product.id}`}>
                                                 <motion.img
                                                     layoutId={'product-detail-' + product.id + '-img'}
                                                     srcSet={product.picture + ', ' + 'https://via.placeholder.com/512/512'}
@@ -138,17 +140,14 @@ export default () => {
                                                     className='aspect-square h-full w-full rounded-2xl border border-black bg-slate-200 object-cover'
                                                 />
                                             </Link>
-                                            <div className='flex absolute right-0 bottom-0 translate-x-2 translate-y-2 items-center gap-2'>
-                                                <div className='text-black bg-white rounded-full w-fit border border-black flex items-baseline gap-2 p-1 px-2'>
-                                                    $ {product.price}
-                                                </div>
-                                                <Cart.add product={product} className='border border-black bg-white text-black rounded-full bottom-2 right-2 p-2' />
-                                            </div>
-
                                         </motion.div>
                                     </div>
                                     <div className='flex justify-between items-baseline px-4 pb-2 pt-0'>
                                         <p>{product.name}</p>
+                                    </div>
+                                    <div className='flex justify-between translate-x-2 translate-y-2 items-center'>
+                                        <div className='text-black bg-white rounded-full w-fit border border-black flex items-baseline gap-2 p-1 px-2'>$ {product.price}</div>
+                                        <Cart.add product={product} className='border border-black bg-white text-black rounded-full bottom-2 right-2 p-2' />
                                     </div>
                                 </motion.div>
                             </motion.div>
