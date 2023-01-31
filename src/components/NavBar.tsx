@@ -1,12 +1,21 @@
+import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import useToggle from 'usehooks-ts/dist/esm/useToggle/useToggle'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import Brand from './Brand'
 import Cart from './Cart'
+import { useContext } from '../context'
+import useCart from '../hooks/useCart'
 
 export default () => {
     const loc = useLocation()
-    const [visible, toggle] = useToggle(false)
+    const { cartVisibility, setCartVisibility, cartLayoutId } = useContext()
+    const [cart] = useCart()
+    useEffect(() => {
+        if (!cartVisibility && cartLayoutId !== '' && cart.length === 1) {
+            setCartVisibility(true)
+        }
+    }, [cartLayoutId])
     const fromBrowser =
         loc.pathname.split('/').filter((s) => s.length > 0).length > 0
             ? 'left'
@@ -28,17 +37,22 @@ export default () => {
             </div> */}
             </div>
             <div className='flex-1' />
-            <button onClick={toggle}><Cart.switch /></button>
-            {visible && (
-                <motion.div
-                    layoutId={'product-detail-' + 1 + '-img'}
-                    initial={{ x: window.innerWidth }}
-                    animate={{ x: 0 }}
-                    className='fixed top-16 right-8 aspect-square rounded-xl border border-black bg-black p-16 text-white'
-                ><Cart.widget /></motion.div>
-            )}
+            <button onClick={() => { setCartVisibility(!cartVisibility) }}><Cart.switch /></button>
+            <AnimatePresence>
+                {cartVisibility && (
+                    <motion.div
+                        initial={{ x: window.innerWidth }}
+                        animate={{ x: 0 }}
+                        exit={{ x: window.innerWidth }}
+                        transition={{ duration: 0.4, ease: 'easeInOut' }}
+                        className='fixed top-12 right-0'
+                    >
+                        <Cart.widget />
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <div>Login</div>
             <div className='rounded-full bg-white px-2 text-black'>SignUp</div>
-        </div>
+        </div >
     )
 }

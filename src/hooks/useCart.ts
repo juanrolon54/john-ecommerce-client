@@ -11,15 +11,31 @@ type CartItem = {
 }
 
 export default () => {
+    // const [localCart, setLocalCart] = useLocalStorage<Cart>('cart', {})
+    // const [cart, setCart] = useState<Cart>(localCart || {})
+    // useEffect(() => {
+    //     setLocalCart(cart)
+    // }, [cart])
     const [cart, setCart] = useLocalStorage<Cart>('cart', {})
-    const { layoutId, setLayoutId } = useContext()
+    const { cartLayoutId: layoutId, setCartLayoutId: setLayoutId } = useContext()
 
     function addProduct(product: Product) {
         setCart(prev => ({ ...prev, [product.id]: { amount: (cart[product.id]?.amount ?? 0) + 1, product } }))
         setLayoutId(product.id + '-' + cart[product.id]?.amount)
     }
-    function removeProduct(id: string) {
-        delete cart[id]
+    function removeProduct(id: string | 'all') {
+        if (id !== 'all') {
+            setCart(prev => {
+                if (prev[id] && prev[id].amount > 1) {
+                    prev[id].amount -= 1
+                    return prev
+                }
+                delete prev[id]
+                return prev
+            })
+            return
+        }
+        setCart({})
     }
     function readCart(cart: Cart): [Product, number][] {
         if (Object.keys(cart).length === 0) { return [] }

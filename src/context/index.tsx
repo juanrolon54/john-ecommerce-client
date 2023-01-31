@@ -13,8 +13,10 @@ type value = {
     setScrolls: Dispatch<SetStateAction<scrolls>>
     filters: string
     setFilters: Dispatch<SetStateAction<string>>
-    layoutId: string
-    setLayoutId: Dispatch<SetStateAction<string>>
+    cartLayoutId: string
+    setCartLayoutId: Dispatch<SetStateAction<string>>
+    setCartVisibility: Dispatch<SetStateAction<boolean>>
+    cartVisibility: boolean
 }
 
 type scrolls = {
@@ -28,10 +30,12 @@ export function ContextProvider(props: { children: ReactNode }) {
 
     const [filters, setFilters] = useState<string>('{}')
 
-    const [layoutId, setLayoutId] = useState<string>('')
+    const [cartLayoutId, setCartLayoutId] = useState<string>('')
+
+    const [cartVisibility, setCartVisibility] = useState<boolean>(false)
 
     return (
-        <context.Provider value={{ scrolls, setScrolls, filters, setFilters, layoutId, setLayoutId }}>
+        <context.Provider value={{ scrolls, setScrolls, filters, setFilters, cartLayoutId, setCartLayoutId, cartVisibility, setCartVisibility }}>
             {props.children}
         </context.Provider>
     )
