@@ -35,12 +35,15 @@ export default {
             prevAmount.current = cartLength
         }, [cart])
 
-        return <div className='flex flex-col bg-slate-100 rounded-2xl w-[30vw] max-h-[30vw] border-black border text-black'>
-            <button onClick={() => {
-                setCartVisibility(false)
-                deleteCart('all')
-            }} className='m-2 px-2 w-fit'>Empty Cart</button>
-            <div className='overflow-y-scroll h-full p-2 flex-1 overflow-x-clip'>
+        return <div className='flex flex-col bg-slate-100 rounded-2xl w-[32vw] max-h-[24vw] border-black border text-black shadow-2xl'>
+            <div className='flex justify-between'>
+                <button onClick={() => {
+                    setCartVisibility(false)
+                    deleteCart('all')
+                }} className='m-2 px-2 w-fit'>Empty Cart</button>
+                <button onClick={() => { setCartVisibility(false) }} className='rounded-full px-2 text-black m-2'><ImCross /></button>
+            </div>
+            <div className='overflow-y-scroll h-full p-2 pl-6 flex-1 overflow-x-clip'>
                 <div className='flex flex-col gap-2'>
                     <AnimatePresence mode='popLayout'>
                         {cart.reverse().map(([product, amount]) =>
@@ -87,9 +90,8 @@ export default {
                     </AnimatePresence>
                 </div>
             </div>
-            {cart.length > 0 && <div className='flex justify-between'>
+            {cart.length > 0 && <div className='flex justify-start'>
                 <Link to='/checkout' className='bg-white border border-black rounded-full px-2 text-black m-2 w-fit' onClick={() => { setCartVisibility(false) }}>Checkout</Link>
-                <button onClick={() => { setCartVisibility(false) }} className='bg-white border border-black rounded-full px-2 text-black m-2 w-fit'>Close</button>
             </div>}
         </div >
     },
@@ -107,11 +109,11 @@ export default {
 
         }, [layoutId])
 
-        return <motion.div whileHover={{ x: 4, y: -4 }} whileTap={{ x: 0, y: 0 }} {...props} className={'flex items-center gap-4  ' + props.className}>
-            <span>{cart.length > 1 && cart.reduce((p, c) => p + c[1], 0)}</span>
+        return <motion.div whileHover={{ x: 4, y: -4 }} whileTap={{ x: 0, y: 0 }} {...props} className={'flex items-center gap-2 ' + props.className}>
+            <span>{cart.length > 0 && +cart.reduce((p, c) => p + c[1], 0) + ' x'}</span>
             <div className='relative h-8 w-8'>
-                <motion.div key='ramiroNieto' className='absolute w-fit h-fit inset-0 border border-black text-black bg-white rounded-full p-2 '><ImCart /></motion.div>
-                {carts.map((cart, i) => <div key={i}>{cart}</div>)}
+                {cart.length > 0 && carts.map((cart, i) => <div key={i}>{cart}</div>)}
+                <motion.div key='ramiroNieto' className={`absolute w-fit h-fit inset-0 rounded-full p-2 ${cart.length > 0 ? 'border border-black text-black bg-white' : ''} `}><ImCart /></motion.div>
             </div>
         </motion.div>
     },
