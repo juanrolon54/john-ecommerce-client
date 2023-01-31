@@ -35,7 +35,7 @@ export default {
             prevAmount.current = cartLength
         }, [cart])
 
-        return <div className='flex flex-col bg-slate-100 w-[30vw] max-h-[30vw] border-black border text-black'>
+        return <div className='flex flex-col bg-slate-100 rounded-2xl w-[30vw] max-h-[30vw] border-black border text-black'>
             <button onClick={() => {
                 setCartVisibility(false)
                 deleteCart('all')
@@ -108,7 +108,7 @@ export default {
         }, [layoutId])
 
         return <motion.div whileHover={{ x: 4, y: -4 }} whileTap={{ x: 0, y: 0 }} {...props} className={'flex items-center gap-4  ' + props.className}>
-            <span>{cart.reduce((p, c) => p + c[1], 0)}</span>
+            <span>{cart.length > 1 && cart.reduce((p, c) => p + c[1], 0)}</span>
             <div className='relative h-8 w-8'>
                 <motion.div key='ramiroNieto' className='absolute w-fit h-fit inset-0 border border-black text-black bg-white rounded-full p-2 '><ImCart /></motion.div>
                 {carts.map((cart, i) => <div key={i}>{cart}</div>)}

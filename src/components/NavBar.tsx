@@ -45,7 +45,7 @@ export default () => {
                         animate={{ x: 0 }}
                         exit={{ x: window.innerWidth }}
                         transition={{ duration: 0.4, ease: 'easeInOut' }}
-                        className='fixed top-12 right-0'
+                        className='fixed top-16 right-8'
                     >
                         <Cart.widget />
                     </motion.div>
