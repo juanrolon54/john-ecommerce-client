@@ -1,5 +1,5 @@
 import { cloneElement } from 'react'
-import { Landing, NotFound, Browser, Product } from './pages'
+import { Landing, NotFound, Browser, Product, Checkout } from './pages'
 import { NavBar } from './components'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useLocation, useRoutes } from 'react-router-dom'
@@ -9,6 +9,7 @@ function App() {
     { path: '/', element: <Landing /> },
     { path: '/browser', element: <Browser /> },
     { path: '/product/:id', element: <Product /> },
+    { path: '/checkout', element: <Checkout /> },
     { path: '*', element: <NotFound /> },
   ])
   const location = useLocation()

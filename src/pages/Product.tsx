@@ -6,8 +6,10 @@ import { useFirestoreDocumentData } from '@react-query-firebase/firestore'
 
 import { doc } from 'firebase/firestore'
 import Products from '../firebase/Products'
+import useCart from '../hooks/useCart'
 
 export default () => {
+    const [, addCart] = useCart()
     const params = useParams()
     if (!params.id) return null
 
@@ -33,8 +35,11 @@ export default () => {
                             <motion.div animate={{ x: 8, y: -8 }} whileHover={{ x: 12, y: -12 }} whileTap={{ x: 0, y: 0 }} className='tracking-tighter bg-white py-2 px-4 rounded-full text-black translate-x-4 z-50 border border-black'>$ {product?.price}</motion.div>
                             <div className='flex-1' />
                             <div className='flex gap-4 items-baseline'>
-                                {product !== undefined && <Cart.add product={product} />}
-                                <motion.button animate={{ x: 8, y: -8 }} whileHover={{ x: 12, y: -12 }} whileTap={{ x: 0, y: 0 }} className='py-2 px-4  bg-white text-black w-fit border border-black rounded-full'>BUY NOW</motion.button>
+                                {product !== undefined && <>
+                                    <Cart.add product={product} />
+                                    <Link to='/checkout' onClick={() => { addCart(product) }}><motion.button animate={{ x: 8, y: -8 }} whileHover={{ x: 12, y: -12 }} whileTap={{ x: 0, y: 0 }} className='py-2 px-4  bg-white text-black w-fit border border-black rounded-full'>BUY NOW</motion.button></Link>
+                                </>
+                                }
                             </div>
                         </div>
                     </div>

@@ -37,7 +37,7 @@ export default () => {
             </div> */}
             </div>
             <div className='flex-1' />
-            <button onClick={() => { setCartVisibility(!cartVisibility) }}><Cart.switch /></button>
+            {loc.pathname !== '/checkout' && <button onClick={() => { setCartVisibility(!cartVisibility) }}><Cart.switch /></button>}
             <AnimatePresence>
                 {cartVisibility && (
                     <motion.div

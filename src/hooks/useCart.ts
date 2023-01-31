@@ -44,5 +44,15 @@ export default () => {
     function createLayoutId(id: string) {
         return String(id + '-' + cart[id]?.amount)
     }
-    return [readCart(cart), addProduct, removeProduct, { rawCart: cart, layoutId, createLayoutId }] as const
+    function getTotalCartValue(cart: Cart): string {
+        return (Math.round(readCart(cart).reduce((p, c) => p + c[1] * c[0].price, 0) * 100) / 100).toFixed(2)
+    }
+
+    function getItemValue(id: string): string {
+        if (cart[id] === undefined) return '0.00'
+        let { product, amount } = cart[id]
+        return (Math.round(product.price * amount * 100) / 100).toFixed(2)
+
+    }
+    return [readCart(cart), addProduct, removeProduct, { rawCart: cart, layoutId, createLayoutId, totalCartValue: getTotalCartValue(cart), getItemValue }] as const
 }
