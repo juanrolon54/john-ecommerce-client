@@ -11,10 +11,12 @@ import assets from '../assets/assets'
 import { ImCoinDollar, ImSortAlphaAsc, ImSortAlphaDesc, ImSortAmountDesc, ImSortAmountAsc, ImSearch, ImCross } from 'react-icons/im'
 import { FieldPath, orderBy, query, where } from 'firebase/firestore'
 import { Spinner } from 'flowbite-react'
+import useCart from '../hooks/useCart'
 
 export default () => {
     const { filters: savedJSONFilters, setFilters: saveFilters } = useContext()
     const savedFilters = JSON.parse(savedJSONFilters)
+    const [, , , { rawCart }] = useCart()
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>(savedFilters?.selectedCategories ?? [])
     function flipFlop(cat: string) {
@@ -120,38 +122,42 @@ export default () => {
                 <motion.div layout className='grid h-max grid-flow-row grid-cols-3 gap-6 relative'>
                     {isLoading && <div className='h-[calc(100vh-10rem)] absolute inset-0 grid place-content-center'><Spinner size='xl' /></div>}
                     {!isLoading &&
-                        products?.map((product) => (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key={product.id}>
-                                <motion.div
-                                    layoutId={'product-detail-' + product.id + '-description'}
-                                    className='flex flex-col bg-black rounded-2xl'
-                                >
-                                    <div className='relative'>
-                                        <motion.div
-                                            animate={{ x: 8, y: -8 }}
-                                            whileHover={{ x: 12, y: -12 }}>
-                                            <Link key={product.id} to={`/product/${product.id}`}>
-                                                <motion.img
-                                                    layoutId={'product-detail-' + product.id + '-img'}
-                                                    srcSet={product.picture + ', ' + 'https://via.placeholder.com/512/512'}
-                                                    alt={product.name}
-                                                    referrerPolicy='no-referrer'
-                                                    loading='lazy'
-                                                    className='aspect-square h-full w-full rounded-2xl border border-black bg-slate-200 object-cover'
-                                                />
-                                            </Link>
-                                        </motion.div>
-                                    </div>
-                                    <div className='flex justify-between items-baseline px-4 pb-2 pt-0'>
-                                        <p>{product.name}</p>
-                                    </div>
-                                    <div className='flex justify-between translate-x-2 translate-y-2 items-center'>
-                                        <div className='text-black bg-white rounded-full w-fit border border-black flex items-baseline gap-2 p-1 px-2'>$ {product.price}</div>
-                                        <Cart.add product={product} className='border border-black bg-white text-black rounded-full bottom-2 right-2 p-2' />
-                                    </div>
+                        products
+                            // ?.filter(product => !rawCart[product.id])
+                            ?.map((product) => (
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key={product.id}>
+                                    <motion.div
+                                        layoutId={'product-detail-' + product.id + '-description'}
+                                        className='flex flex-col bg-black rounded-2xl'
+                                    >
+                                        <div className='relative'>
+                                            <motion.div
+                                                animate={{ x: 8, y: -8 }}
+                                                whileHover={{ x: 12, y: -12 }}
+                                                whileTap={{ x: 0, y: 0 }}
+                                            >
+                                                <Link key={product.id} to={`/product/${product.id}`}>
+                                                    <motion.img
+                                                        layoutId={'product-detail-' + product.id + '-img'}
+                                                        srcSet={product.picture + ', ' + 'https://via.placeholder.com/512/512'}
+                                                        alt={product.name}
+                                                        referrerPolicy='no-referrer'
+                                                        loading='lazy'
+                                                        className='aspect-square h-full w-full rounded-2xl border border-black bg-slate-200 object-cover'
+                                                    />
+                                                </Link>
+                                            </motion.div>
+                                        </div>
+                                        <div className='flex justify-between items-baseline px-4 pb-2 pt-0'>
+                                            <p>{product.name}</p>
+                                        </div>
+                                        <div className='flex justify-between items-baseline'>
+                                            <div className='text-black translate-x-2 -translate-y-2 bg-white rounded-full w-fit border border-black flex items-baseline gap-2 p-1 px-2'>$ {product.price}</div>
+                                            <Cart.add product={product} className='border border-black bg-white text-black rounded-full p-2' />
+                                        </div>
+                                    </motion.div>
                                 </motion.div>
-                            </motion.div>
-                        ))
+                            ))
                     }
                     {products?.length === 0 && <span className='bg-black text-white px-2 w-fit'>No results</span>}
                 </motion.div>

@@ -23,16 +23,18 @@ export default () => {
             <div className='flex flex-col col-span-3'>
                 <div className='flex text-6xl font-semi h-24 '>{product?.name}</div>
                 <motion.div layoutId={'product-detail-' + params.id + '-description'} className='flex flex-1 bg-black text-white gap-4 rounded-2xl '>
-                    <div className='flex flex-col gap-4 p-2 flex-1'>
-                        <div>{product?.abstract}</div>
-                        <div>{product?.article}</div>
+                    <div className='flex flex-col gap-4 flex-1'>
+                        <div className='p-4'>
+                            <p>{product?.abstract}</p><br />
+                            <p>{product?.article}</p>
+                        </div>
                         <div className='flex-1' />
                         <div className='flex gap-4 items-baseline text-xl'>
-                            <div className='tracking-tighter bg-white py-2 px-4 rounded-full text-black translate-x-4 z-50 border border-black'>$ {product?.price}</div>
+                            <motion.div animate={{ x: 8, y: -8 }} whileHover={{ x: 12, y: -12 }} whileTap={{ x: 0, y: 0 }} className='tracking-tighter bg-white py-2 px-4 rounded-full text-black translate-x-4 z-50 border border-black'>$ {product?.price}</motion.div>
                             <div className='flex-1' />
-                            <div className='flex gap-2 translate-x-6 items-baseline'>
+                            <div className='flex gap-4 items-baseline'>
                                 {product !== undefined && <Cart.add product={product} />}
-                                <div className='py-2 px-4 bg-white text-black w-fit border border-black rounded-full'>BUY NOW</div>
+                                <motion.button animate={{ x: 8, y: -8 }} whileHover={{ x: 12, y: -12 }} whileTap={{ x: 0, y: 0 }} className='py-2 px-4  bg-white text-black w-fit border border-black rounded-full'>BUY NOW</motion.button>
                             </div>
                         </div>
                     </div>

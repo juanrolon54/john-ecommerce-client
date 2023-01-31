@@ -13,6 +13,8 @@ type value = {
     setScrolls: Dispatch<SetStateAction<scrolls>>
     filters: string
     setFilters: Dispatch<SetStateAction<string>>
+    layoutId: string
+    setLayoutId: Dispatch<SetStateAction<string>>
 }
 
 type scrolls = {
@@ -26,8 +28,10 @@ export function ContextProvider(props: { children: ReactNode }) {
 
     const [filters, setFilters] = useState<string>('{}')
 
+    const [layoutId, setLayoutId] = useState<string>('')
+
     return (
-        <context.Provider value={{ scrolls, setScrolls, filters, setFilters }}>
+        <context.Provider value={{ scrolls, setScrolls, filters, setFilters, layoutId, setLayoutId }}>
             {props.children}
         </context.Provider>
     )
