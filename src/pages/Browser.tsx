@@ -26,16 +26,16 @@ export default () => {
                 {parameters.map(parameter => <div key={Math.random()} className="px-4 pl-8 bg-black rounded-full">{parameter}</div>)}
             </div>
             <div className="grid grid-cols-3 grid-flow-row gap-4 h-max">
-                {!isLoading && products?.map(({ id, name, picture, price }) => <Link key={id} to={`/product/${id}`} className="h-full w-full">
-                    <motion.div layoutId={'product-detail-' + id + '-description'} className="rounded-t-3xl rounded-b-lg bg-black flex flex-col">
+                {!isLoading && products?.map((product) => <Link key={product?.id} to={`/product/${product?.id}`} className="h-full w-full">
+                    <motion.div layoutId={'product-detail-' + product?.id + '-description'} className="rounded-t-3xl rounded-b-lg bg-black flex flex-col">
                         <div className='relative'>
-                            <motion.img layoutId={'product-detail-' + id + '-img'} src={picture} alt={name} crossOrigin='anonymous' referrerPolicy='no-referrer' loading="lazy" className="aspect-square object-cover rounded-3xl bg-slate-400 w-full h-full border border-black" />
+                            <motion.img layoutId={'product-detail-' + product?.id + '-img'} src={product?.picture} alt={product?.name} crossOrigin='anonymous' referrerPolicy='no-referrer' loading="lazy" className="aspect-square object-cover rounded-3xl bg-slate-400 w-full h-full border border-black" />
                             <div className="absolute bottom-4 right-4 bg-black px-2 rounded-full">
-                                $ {price}
+                                $ {product?.price}
                             </div>
                         </div>
                         <div className='p-4'>
-                            <p>{name}</p>
+                            <p>{product?.name}</p>
                         </div>
                     </motion.div>
                 </Link>)}
