@@ -20,6 +20,8 @@ export default () => {
     const { cartLayoutId: layoutId, setCartLayoutId: setLayoutId } = useContext()
 
     function addProduct(product: Product) {
+        if (product.id === '0') return
+
         setCart(prev => ({ ...prev, [product.id]: { amount: (cart[product.id]?.amount ?? 0) + 1, product } }))
         setLayoutId(product.id + '-' + cart[product.id]?.amount)
     }
