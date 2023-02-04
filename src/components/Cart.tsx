@@ -64,7 +64,7 @@ export default {
                                 </Link>
                                 <div className='flex flex-col px-2'>
                                     <span className='font-semibold'>{product.name} <span className='font-normal'>x{amount}</span></span>
-                                    <span>${product.price}</span>
+                                    <span>${product?.price}</span>
                                 </div>
                                 <div className='flex-1' />
                                 <div className='grid grid-rows-3 grid-cols-1'>
