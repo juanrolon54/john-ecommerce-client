@@ -45,7 +45,7 @@ export default () => {
         return String(id + '-' + cart[id]?.amount)
     }
     function getTotalCartValue(cart: Cart): string {
-        return (Math.round(readCart(cart).reduce((p, c) => p + c[1] * c[0]?.price, 0) * 100) / 100).toFixed(2)
+        return (Math.round(readCart(cart).reduce((p, c) => p + c[1] * (c[0]?.price ?? 0), 0) * 100) / 100).toFixed(2)
     }
 
     function getItemValue(id: string): string {
