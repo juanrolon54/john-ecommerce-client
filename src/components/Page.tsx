@@ -4,49 +4,50 @@ import { useLocation } from 'react-router-dom'
 import type { HTMLMotionProps } from 'framer-motion'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useContextScroll } from '../hooks'
+import Footer from './Footer'
 
-export default (props: HTMLMotionProps<"div">) => {
+interface PageProps extends HTMLMotionProps<'div'> {
+    scrollRestoring?: boolean
+}
+
+export default (props: PageProps) => {
     const loc = useLocation()
     const [scroll, setScroll] = useContextScroll(loc.pathname)
     const ref = useRef<HTMLDivElement>(null)
 
     const directions = {
         left: -1,
-        right: 1
+        right: 1,
     }
 
     // @ts-ignore
     const dir = directions[loc.state?.dir] ?? 1
-    const restoreScroll = () => {
-        // console.log('scrollHeight:', ref.current?.clientHeight, 'savedScroll:', scroll)
-        if (ref.current) {
-            if (scroll <= (ref.current.scrollHeight - ref.current.clientHeight)) {
-                ref.current.scrollTop = scroll
-            } else {
-                console.log('redone', scroll, (ref.current?.scrollHeight || 0) - (ref.current?.clientHeight || 0))
-                ref.current.scrollTop = (ref.current?.scrollHeight || 0) - (ref.current?.clientHeight || 0)
-
-                // ref.current.scrollTop = (ref.current?.scrollHeight - ref.current?.clientHeight)
-                setTimeout(restoreScroll, 0)
-            }
-        } else {
-            setTimeout(restoreScroll, 0)
-        }
-    }
+    const scrollRestoring = props.scrollRestoring ?? true
 
     useLayoutEffect(() => {
-        if (ref.current) ref.current.scrollTop = scroll
-    }, [])
-    return <motion.div
-        {...props}
-        onScroll={() => { setScroll(ref.current?.scrollTop || 0) }}
-        className={props.className + ' absolute top-0 left-0 right-0 h-page p-page overflow-x-hidden overflow-y-scroll'}
-        ref={ref}
-        initial={{ x: window.innerWidth * dir - 64 }}
-        animate={{ x: 0 }}
-        exit={{ x: -window.innerWidth * dir }}
-        transition={{ type: 'spring', damping: 100, stiffness: 600 }}
-    >
-        {props.children}
-    </motion.div>
+        if (ref.current && scrollRestoring) {
+            ref.current.scrollTop = scroll
+        }
+        return () => {
+            setScroll(ref.current?.scrollTop || 0)
+        }
+    }, [props.scrollRestoring])
+    return (
+        <motion.div
+            {...props}
+            className={
+                ' h-page absolute top-0 left-0 right-0 overflow-x-hidden overflow-y-scroll'
+            }
+            ref={ref}
+            initial={{ x: (window.innerWidth * dir) - 64 }}
+            animate={{ x: 0 }}
+            exit={{ x: -window.innerWidth * dir }}
+            transition={{ type: 'spring', damping: 100, stiffness: 1200 }}
+        >
+            <div className={props.className + ' min-h-page p-page'}>
+                <>{props.children}</>
+            </div>
+            <Footer className='grid place-content-center' />
+        </motion.div>
+    )
 }

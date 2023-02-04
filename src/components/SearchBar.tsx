@@ -1,12 +1,17 @@
 import { motion, HTMLMotionProps } from 'framer-motion'
 import { ForwardRefComponent } from 'framer-motion'
 
-export default function (props: HTMLMotionProps<"input">) {
-    return <motion.input
-        {...props}
-        layoutId='search-bar'
-        type='text'
-        className='border z-50 border-black w-full text-black rounded-full px-2 outline-none active:outline-none focus:ring-0 border-x-0 border-t-0 bg-white h-8'
-        placeholder='Search'
-    />
+export default function (props: HTMLMotionProps<'input'>) {
+    return (
+        <motion.input
+            layoutId='search-bar'
+            type='text'
+            placeholder='Search'
+            {...props}
+            className={
+                props.className +
+                ' z-50 h-8 w-full rounded-full border border-black bg-white px-2 text-black outline-none focus:ring-0 active:outline-none'
+            }
+        />
+    )
 }
